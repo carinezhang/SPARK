@@ -11,9 +11,6 @@ object Config {
 }
 
 object Main extends App {
-  val config = new Properties()
-  config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, Config.BootstrapServers)
-
 		//config.setProperty(StreamsConfig.APPLICATION_ID_CONFIG, "stream-starter-project")
 		// config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:9092")
 	//	config.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
@@ -22,7 +19,7 @@ object Main extends App {
 		//config.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass())
 		//config.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass())
   
- val userProducer = BasicProducer[User]()
+  val userProducer = BasicProducer[User]()
 
   val user = User(
     Id[User]("user0"),
@@ -39,4 +36,9 @@ object Main extends App {
   userProducer.send(user)
 
   userProducer.close()
-	}
+
+
+  val userConsumer = BasicConsumer[User]()
+  userConsumer.read()
+  userConsumer.close()
+}

@@ -14,45 +14,31 @@ import org.apache.kafka.clients.consumer.{KafkaConsumer, ConsumerConfig, Consume
 
 case class BasicConsumer[V](implicit record: Record[V]) {
 
-def ntm(t: Array[Byte]) = {
-			val in = new ByteArrayInputStream(t)
-			val input = AvroInputStream.binary[User](in)
-			input.iterator.toSeq
-}
+      // val records: ConsumerRecords[String, Array[Byte]] = consumer.poll(1000)
+			// records.asScala.foreach(l => 
+			// println(AvroInputStream.binary[User](new ByteArrayInputStream(l.value)).iterator.toSeq)
+			// )
+
   val kafkaProps = new Properties()
   kafkaProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, Config.BootstrapServers)
 	kafkaProps.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
   kafkaProps.put("value.deserializer", "org.apache.kafka.common.serialization.ByteArrayDeserializer")
   kafkaProps.put("group.id", "something")
-	  kafkaProps.put("schema.registry.url", "http://localhost:2181")
-
+	kafkaProps.put("schema.registry.url", "http://localhost:2181")
 
   val consumer = new KafkaConsumer[String, Array[Byte]](kafkaProps)
-
-	// consumer.assign(tps);
-	// consumer.seekToBeginning(tps);
 	def read() {
-					println("**********************")
-
+					println("*************()()()********")
 		consumer.subscribe(Collections.singletonList(record.topic))
-					println("**********************")
-
+					println("******()()()()****************")
       val records: ConsumerRecords[String, Array[Byte]] = consumer.poll(1000)
-      records.asScala.foreach(record => println(ntm(record.value)))
+			records.asScala.foreach(l => 
+			{
+			if (record.topic.equals("users")) println(AvroInputStream.binary[User](new ByteArrayInputStream(l.value)).iterator.toSeq)
+			if (record.topic.equals("posts")) println(AvroInputStream.binary[Post](new ByteArrayInputStream(l.value)).iterator.toSeq)
+			if (record.topic.equals("comments")) println(AvroInputStream.binary[Comment](new ByteArrayInputStream(l.value)).iterator.toSeq)
+			}
+			)
 	}
-
-    // implicit class StreamsBuilderSOps(streamsBuilder: StreamsBuilderS) {
-  //   def streamFromRecord[V] = new StreamBuilder[V]
-
-  //   class StreamBuilder[V] {
-  //     def apply[K]()(implicit record: Record[K, V], consumed: Consumed[K, V]): KStreamS[K, V] =
-  //       streamsBuilder.stream[K, V](record.topic)
-  //   }
-  // }
-
-  // implicit class KStreamSOps[K, V](stream: KStreamS[K, V]) {
-  //   def toTopic(implicit record: Record[K, V], produced: Produced[K, V]) = stream.to(record.topic)
-  // }
-
   def close() = consumer.close()
 }

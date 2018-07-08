@@ -50,46 +50,39 @@ case class BasicProducer[V]() {
   //   baos.toByteArray
   // }
 
+  // val os = AvroOutputStream.data[User](new File("/tmp/carine.avro"))
+   // os.write(value)
+   // os.flush()
+   // os.close()
+ 
+
   def send(value: User)(implicit record: Record[User]) = {
-
-
-
-  implicit val schemaFor = SchemaFor[User]
-  val schema = AvroSchema[User]
-    val os = AvroOutputStream.data[User](new File("/tmp/carine.avro"))
-    os.write(value)
-    os.flush()
-    os.close()
-
-    //convert value to Avro format and replace "val"
-    //implicit val UserFromRecord = FromRecord[V]
-    //import com.sksamuel.avro4s.AvroSchema
-   // case class Pizza(name: String, ingredients: Seq[Ingredient], vegetarian: Boolean, vegan: Boolean, calories: Int)
-
-   //val schemaFor = SchemaFor[User]
-  //val schema = AvroSchema[User]
-   // println(schema)
-
-    //val schema = AvroSchema[V]
-    //println(schema)
-    // Schema schema = ReflectData.get().getSchema(user.getClass());
-    //    GenericRecord avroRecord = new GenericData.Record(schema);  
-
-
-//    val format = RecordFormat[V]
-//    val tmp = format.to(value)
-
-
- val baos = new ByteArrayOutputStream()
-val output = AvroOutputStream.binary[User](baos)
-output.write(value)
-output.close()
+    implicit val schemaFor = SchemaFor[User]
+    val schema = AvroSchema[User]
+    val baos = new ByteArrayOutputStream()
+    val output = AvroOutputStream.binary[User](baos)
+    output.write(value)
+    output.close()
     val data = new ProducerRecord[V, Array[Byte]](record.topic, baos.toByteArray)
     println("..................")
     println(data)
     println("..................")
     producer.send(data)
+  }
 
+
+  def send(value: Post)(implicit record: Record[Post]) = {
+    implicit val schemaFor = SchemaFor[Post]
+    val schema = AvroSchema[Post]
+    val baos = new ByteArrayOutputStream()
+    val output = AvroOutputStream.binary[Post](baos)
+    output.write(value)
+    output.close()
+    val data = new ProducerRecord[V, Array[Byte]](record.topic, baos.toByteArray)
+    println(".........().........")
+    println(data)
+    println("..........()........")
+    producer.send(data)
   }
 
   def close():Unit = producer.close()

@@ -41,6 +41,18 @@ case class BasicConsumer[V](implicit record: Record[V]) {
 			)
 	}
 
+	def getAllUsers() = {
+			val list = List()
+					println("*************()()()********")
+		consumer.subscribe(Collections.singletonList(record.topic))
+					println("******()()()()****************")
+      val records: ConsumerRecords[String, Array[Byte]] = consumer.poll(1000)
+			records.asScala.map(l => 
+			{
+				AvroInputStream.binary[Post](new ByteArrayInputStream(l.value)).iterator.toSeq(0)
+			})
+	}
+
 	def readAllPosts() = {
 		val list = List()
 					println("*************()()()********")

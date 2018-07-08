@@ -43,6 +43,21 @@ def menu() : Unit = {
     }
 }
 
+def saveAvro() = {
+  /* val userConsumer = BasicConsumer[User]()
+   val l = userConsumer.getAllUsers()
+   val schemaFor = SchemaFor[User]
+  val schema = AvroSchema[User]
+
+val os = AvroOutputStream.data[User](new File("/tmp/user.avro"))
+l.foreach( user =>{
+  os.write(user)
+  os.flush()))
+}
+os.close()
+menu()*/
+}
+
 def listPosts() : Unit = {
     val postConsumer = BasicConsumer[Post]()
   val l  = postConsumer.readAllPosts()

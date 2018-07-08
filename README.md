@@ -1,3 +1,7 @@
-bin/zookeeper-server-start.sh config/zookeeper.properties
+SPARK PROJECT
 
-bin/kafka-server-start.sh config/server.properties
+In order to launch the project just type:
+./start.sh
+sbt run
+
+After that, you will have a menu.

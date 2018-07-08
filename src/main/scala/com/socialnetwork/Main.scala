@@ -18,12 +18,16 @@ object Main extends App {
 		//config.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
 		//config.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass())
 		//config.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass())
-  
+  case class Pizza(name: String, ingredients: Seq[String], vegetarian: Boolean, vegan: Boolean, calories: Int)
+import com.sksamuel.avro4s.AvroSchema
+val schema = AvroSchema[Pizza]
+println(schema)
+
   val userProducer = BasicProducer[User]()
 
   val user = User(
     Id[User]("user0"),
-    Instant.now(),
+    //Instant.now(),
     URI.create("https://some-uri"),
     "Test",
     verified = false,

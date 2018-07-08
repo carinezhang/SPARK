@@ -9,7 +9,7 @@ object Post {
   implicit val record: Record[Post] = new Record[Post] {
     val topic = "posts"
     def key(post: Post): Id[Post] = post.id
-    def timestamp(post: Post): Long = post.updatedOn.toEpochMilli
+    //def timestamp(post: Post): Long = post.updatedOn.toEpochMilli
   }
 }
 

@@ -22,14 +22,17 @@ case class BasicConsumer[V](implicit record: Record[V]) {
 	// consumer.seekToBeginning(tps);
 	def read() {
 		consumer.subscribe(Collections.singletonList(record.topic))
-		// while(true){
-		// 	val records=consumer.poll(100)
-		// 	println("**********************")
-		// 	for (record<-records.asScala){
-		// 		println(record)
-		// 	}
-		// 	println("**********************")
-		// }
+		//while(true){
+			val records=consumer.poll(100)
+			
+			println("**********************")
+			println(records)
+			println("**********************")
+			for (record<-records.asScala){
+				println(record)
+			}
+			println("**********************")
+		//}
 	}
 
     // implicit class StreamsBuilderSOps(streamsBuilder: StreamsBuilderS) {

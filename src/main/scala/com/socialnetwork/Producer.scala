@@ -22,7 +22,7 @@ import java.io.{ByteArrayInputStream, ByteArrayOutputStream, ObjectInputStream, 
 
 trait Record[V] {
   def topic: String
-  def key(value: V): Id[V]
+ // def key(value: V): Id[V]
  // def timestamp(value: V): Long
 }
 
@@ -41,20 +41,24 @@ case class BasicProducer[V]() {
     val producer = new KafkaProducer[V, V](kafkaProps)
   // val schemaParser = new Parser
 
-  def toBinary[V: SchemaFor : ToRecord](event: V): Array[Byte] = {
-    val baos = new ByteArrayOutputStream()
-    val output = AvroOutputStream.binary[V](baos)
-    output.write(event)
-    output.close()
-    baos.toByteArray
-  }
+  // def toBinary[V: SchemaFor : ToRecord](event: V): Array[Byte] = {
+  //   val baos = new ByteArrayOutputStream()
+  //   val output = AvroOutputStream.binary[V](baos)
+  //   output.write(event)
+  //   output.close()
+  //   baos.toByteArray
+  // }
 
   def send(value: V)(implicit record: Record[V]) = {
     //convert value to Avro format and replace "val"
     //implicit val UserFromRecord = FromRecord[V]
-    import com.sksamuel.avro4s.AvroSchema
-   implicit val schemaFor = SchemaFor[User]
-val schema = AvroSchema[User]
+    //import com.sksamuel.avro4s.AvroSchema
+   // case class Pizza(name: String, ingredients: Seq[Ingredient], vegetarian: Boolean, vegan: Boolean, calories: Int)
+
+   //val schemaFor = SchemaFor[User]
+  //val schema = AvroSchema[User]
+   // println(schema)
+
     //val schema = AvroSchema[V]
     //println(schema)
     // Schema schema = ReflectData.get().getSchema(user.getClass());

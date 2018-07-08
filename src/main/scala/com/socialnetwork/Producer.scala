@@ -19,6 +19,7 @@ import org.apache.avro.{JsonProperties, LogicalTypes, Schema, SchemaBuilder}
 
 import java.io._
 
+import org.apache.kafka.clients.producer.{ProducerConfig}
 
 trait Record[V] {
   def topic: String

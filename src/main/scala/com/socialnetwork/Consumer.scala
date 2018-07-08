@@ -7,32 +7,38 @@ import java.util.Properties
 
 import scala.collection.JavaConverters._
 
-import org.apache.kafka.clients.consumer.{KafkaConsumer, ConsumerConfig, ConsumerRecord}
+import com.sksamuel.avro4s._
+import java.io._
+
+import org.apache.kafka.clients.consumer.{KafkaConsumer, ConsumerConfig, ConsumerRecords}
 
 case class BasicConsumer[V](implicit record: Record[V]) {
+
+def ntm(t: Array[Byte]) = {
+			val in = new ByteArrayInputStream(t)
+			val input = AvroInputStream.binary[User](in)
+			input.iterator.toSeq
+}
   val kafkaProps = new Properties()
   kafkaProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, Config.BootstrapServers)
-  kafkaProps.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
-  kafkaProps.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
+	kafkaProps.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
+  kafkaProps.put("value.deserializer", "org.apache.kafka.common.serialization.ByteArrayDeserializer")
   kafkaProps.put("group.id", "something")
+	  kafkaProps.put("schema.registry.url", "http://localhost:2181")
 
-  val consumer = new KafkaConsumer[String, String](kafkaProps)
+
+  val consumer = new KafkaConsumer[String, Array[Byte]](kafkaProps)
 
 	// consumer.assign(tps);
 	// consumer.seekToBeginning(tps);
 	def read() {
+					println("**********************")
+
 		consumer.subscribe(Collections.singletonList(record.topic))
-		//while(true){
-			val records=consumer.poll(100)
-			
-			println("**********************")
-			println(records)
-			println("**********************")
-			for (record<-records.asScala){
-				println(record)
-			}
-			println("**********************")
-		//}
+					println("**********************")
+
+      val records: ConsumerRecords[String, Array[Byte]] = consumer.poll(1000)
+      records.asScala.foreach(record => println(ntm(record.value)))
 	}
 
     // implicit class StreamsBuilderSOps(streamsBuilder: StreamsBuilderS) {

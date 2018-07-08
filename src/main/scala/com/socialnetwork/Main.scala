@@ -27,7 +27,8 @@ object Main extends App {
 
   val userProducer = BasicProducer[User]()
 
-  val user = User("user0", "Test", "wocaoni.cn", false, false)
+  val user = User("user0", "CONSUMER", "wocaoni.cn", false, false)
+  val user2 = User("user2", "CONSUMER", "wocaoni.cn", false, false)
 
   val schemaFor = SchemaFor[User]
   val schema = AvroSchema[User]
@@ -47,11 +48,14 @@ println(deserialize.mkString("\n"))
   println("----------------")
 
   userProducer.send(user)
-
+  userProducer.send(user2)
+ println("a----------------")
   userProducer.close()
-
+ println("b----------------")
 
   val userConsumer = BasicConsumer[User]()
+   println("c----------------")
   userConsumer.read()
+   println("d----------------")
   userConsumer.close()
 }

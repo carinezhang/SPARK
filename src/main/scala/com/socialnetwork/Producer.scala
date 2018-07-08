@@ -17,7 +17,7 @@ import com.sksamuel.avro4s._
 import org.apache.avro.Schema.Field
 import org.apache.avro.{JsonProperties, LogicalTypes, Schema, SchemaBuilder}
 
-import java.io.{ByteArrayInputStream, ByteArrayOutputStream, ObjectInputStream, ObjectOutputStream}
+import java.io._
 
 
 trait Record[V] {
@@ -31,14 +31,14 @@ case class BasicProducer[V]() {
   kafkaProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, Config.BootstrapServers)
 
   // This is mandatory, even though we don't send keys
-  kafkaProps.put("schema.registry.url", "http://localhost:8081")
-  kafkaProps.put("key.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer")
-  kafkaProps.put("value.serializer", "io.confluent.kafka.serializers.KafkaAvroSerializer")
+  kafkaProps.put("schema.registry.url", "http://localhost:2181")
+  kafkaProps.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+  kafkaProps.put("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer")
   //def inner: KafkaAvroSerializer
 
 
   //this is our actual connection to Kafka!
-    val producer = new KafkaProducer[V, V](kafkaProps)
+    val producer = new KafkaProducer[V, Array[Byte]](kafkaProps)
   // val schemaParser = new Parser
 
   // def toBinary[V: SchemaFor : ToRecord](event: V): Array[Byte] = {
@@ -49,7 +49,17 @@ case class BasicProducer[V]() {
   //   baos.toByteArray
   // }
 
-  def send(value: V)(implicit record: Record[V]) = {
+  def send(value: User)(implicit record: Record[User]) = {
+
+
+
+  implicit val schemaFor = SchemaFor[User]
+  val schema = AvroSchema[User]
+    val os = AvroOutputStream.data[User](new File("/tmp/carine.avro"))
+    os.write(value)
+    os.flush()
+    os.close()
+
     //convert value to Avro format and replace "val"
     //implicit val UserFromRecord = FromRecord[V]
     //import com.sksamuel.avro4s.AvroSchema
@@ -69,8 +79,11 @@ case class BasicProducer[V]() {
 //    val tmp = format.to(value)
 
 
-
-    val data = new ProducerRecord[V, V](record.topic, (value))
+ val baos = new ByteArrayOutputStream()
+val output = AvroOutputStream.binary[User](baos)
+output.write(value)
+output.close()
+    val data = new ProducerRecord[V, Array[Byte]](record.topic, baos.toByteArray)
     println("..................")
     println(data)
     println("..................")

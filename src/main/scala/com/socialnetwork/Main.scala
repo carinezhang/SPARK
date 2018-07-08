@@ -8,7 +8,7 @@ import org.apache.kafka.clients.producer.{ProducerConfig}
 
 import com.sksamuel.avro4s._
 
-import java.io.{ByteArrayInputStream, ByteArrayOutputStream, ObjectInputStream, ObjectOutputStream}
+import java.io._ //{ByteArrayInputStream, ByteArrayOutputStream, ObjectInputStream, ObjectOutputStream}
 
 
 
@@ -31,16 +31,16 @@ object Main extends App {
 
   val schemaFor = SchemaFor[User]
   val schema = AvroSchema[User]
-  val baos = new ByteArrayOutputStream()
-val output = AvroOutputStream.binary[User](baos)
-output.write(user)
-output.close()
-val bytes = baos.toByteArray
 
-val in = new ByteArrayInputStream(bytes)
-val input = AvroInputStream.binary[User](in)
-val result = input.iterator.toSeq
-println(result(0))
+val os = AvroOutputStream.data[User](new File("/tmp/user.avro"))
+os.write(user)
+os.flush()
+os.close()
+
+val is = AvroInputStream.data[User](new File("/tmp/user.avro"))
+val deserialize = is.iterator.toSet
+is.close()
+println(deserialize.mkString("\n"))
 
   println("----------------")
   println(user)

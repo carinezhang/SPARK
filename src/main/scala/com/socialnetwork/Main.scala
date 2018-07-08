@@ -46,7 +46,11 @@ def menu() : Unit = {
 def listPosts() : Unit = {
     val postConsumer = BasicConsumer[Post]()
   val l  = postConsumer.readAllPosts()
-  l.foreach(println)
+  val sc = SentimentBayes.loadData()
+  l.foreach( x =>
+    println(SentimentBayes.sentimentBayes(sc, x))
+  )
+  menu()
 }
 
 def addMenu() : Unit = {
@@ -79,7 +83,20 @@ def addPost() = {
   postProducer.send(p)
   menu()
 }
-def addComment() = {}
+def addComment() = {
+  println("Enter id : ")
+  val id = scala.io.StdIn.readLine()
+  println("Enter author : ")
+  val author = scala.io.StdIn.readLine()
+  println("Enter post id : ")
+  val post = scala.io.StdIn.readLine()
+  println("Enter text : ")
+  val text = scala.io.StdIn.readLine()
+  val p = Comment(id,author,post, text, false)
+  val postProducer = BasicProducer[User]()
+  postProducer.send(p)
+  menu()
+}
 
 def addUser() = {
   println("Enter id : ")

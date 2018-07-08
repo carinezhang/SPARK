@@ -12,10 +12,9 @@ resolvers ++= Seq(
 
 libraryDependencies ++= Seq(
     "org.apache.kafka" % "kafka-streams" % "0.10.0.0",
-    "org.apache.spark" %% "spark-core" % "2.0.0",
+    "org.apache.spark" %% "spark-core" % "2.3.0",
     "com.sksamuel.avro4s" %% "avro4s-core" % "1.8.3",
     "io.confluent" % "kafka-avro-serializer" % "3.2.1",
-    "org.apache.avro" % "avro" % "1.8.2"
-
-
+    "org.apache.avro" % "avro" % "1.8.2",
+    "org.apache.spark" %% "spark-mllib" % "2.3.0"
 )

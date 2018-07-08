@@ -85,5 +85,19 @@ case class BasicProducer[V]() {
     producer.send(data)
   }
 
+def send(value: Comment)(implicit record: Record[Comment]) = {
+    implicit val schemaFor = SchemaFor[Comment]
+    val schema = AvroSchema[Comment]
+    val baos = new ByteArrayOutputStream()
+    val output = AvroOutputStream.binary[Comment](baos)
+    output.write(value)
+    output.close()
+    val data = new ProducerRecord[V, Array[Byte]](record.topic, baos.toByteArray)
+    println(".........().........")
+    println(data)
+    println("..........()........")
+    producer.send(data)
+  }
+
   def close():Unit = producer.close()
 }
